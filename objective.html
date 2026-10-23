@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBJECTIVE — 당신은 어떤 방식으로 세상을 해석하나요?</title>
+<style>
+:root {
+  --site-primary: #171717;
+  --site-on-primary: #ffffff;
+  --site-secondary: #e8e5de;
+  --site-on-secondary: #171717;
+  --site-background: #f7f6f2;
+  --site-on-background: #171717;
+  --site-font-body: "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+  --site-font-heading: "Noto Serif KR", "Batang", Georgia, serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  color-scheme: light dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: light-dark(#f7f6f2,#171717); color: light-dark(#171717,#f7f6f2); font-family: var(--site-font-body); }
+#app { background-color: var(--site-background); color: var(--site-on-background); min-height: 100vh; border-radius: 0; transition: background .2s, color .2s; }
+.site-header { padding: calc(24px * var(--site-spacing-scale)) 5vw 18px; border-bottom: 1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.brand { font-size: 18px; font-weight: 800; letter-spacing: .22em; }
+.header-note { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; text-align:right; }
+main { max-width: 1120px; margin: auto; padding: 0 5vw 80px; }
+.hero { min-height: 510px; display:grid; grid-template-columns: 1.1fr .9fr; gap:50px; align-items:center; padding: 70px 0 60px; border-bottom: 1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); }
+.eyebrow { font-size: 10px; letter-spacing:.2em; text-transform:uppercase; }
+h1 { font-family:var(--site-font-heading); font-size:clamp(39px,5.5vw,72px); line-height:1.28; font-weight:500; letter-spacing:-.065em; margin:28px 0 24px; }
+.hero p { max-width:470px; font-size:14px; line-height:2; color:color-mix(in srgb, var(--site-on-background) 75%, transparent); }
+.hero-meta { margin-top:35px; display:flex; gap:24px; font-size:10px; letter-spacing:.08em; }
+.hero-art { min-height:310px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background:var(--site-secondary); color:var(--site-on-secondary); }
+.hero-art::before { content:""; position:absolute; width:210px;height:210px;border:1px solid currentColor;border-radius:50%; opacity:calc(.24 * var(--site-decoration-opacity)); }
+.hero-art::after { content:""; position:absolute; width:1px;height:100%;background:currentColor;opacity:calc(.2 * var(--site-decoration-opacity)); }
+.art-object { position:relative; z-index:1; width:115px; height:170px; border:1px solid currentColor; transform:rotate(12deg); display:flex; align-items:center; justify-content:center; font-family:var(--site-font-heading); font-size:13px; writing-mode:vertical-rl; letter-spacing:.2em; background:var(--site-secondary); }
+.art-index { position:absolute; bottom:16px;left:18px;font-size:9px;letter-spacing:.12em; }
+.art-index.right {left:auto;right:18px;text-align:right;}
+.intro-strip { display:flex; justify-content:space-between; gap:20px; padding:23px 0; border-bottom:1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); font-size:11px; letter-spacing:.05em; }
+#quiz { padding-top:65px; }
+.section-top { display:flex; justify-content:space-between; gap:20px; align-items:flex-end; margin-bottom:30px; }
+.section-top h2 { font-family:var(--site-font-heading); font-weight:500; font-size:clamp(28px,3vw,40px); margin:10px 0 0; }
+.progress-text { font-size:11px; white-space:nowrap; }
+.progress-track { height:2px; background:color-mix(in srgb, var(--site-on-background) 15%, transparent); margin-bottom:38px; }
+.progress-fill { height:100%; background:var(--site-on-background); width:0%; transition:width .25s; }
+.question-number { font-size:11px; letter-spacing:.16em; margin-bottom:15px; }
+.question-title { font-family:var(--site-font-heading); font-size:clamp(23px,3.4vw,35px); line-height:1.6; font-weight:500; margin:0 0 12px; }
+.question-hint { font-size:12px; line-height:1.8; color:color-mix(in srgb, var(--site-on-background) 65%, transparent); margin:0 0 28px; }
+.options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.option { text-align:left; border:1px solid color-mix(in srgb, var(--site-on-background) 28%, transparent); background:transparent; color:var(--site-on-background); padding:20px 19px; min-height:100px; cursor:pointer; font:inherit; transition:background .18s,color .18s,border .18s; }
+.option:hover,.option:focus-visible { outline:none; border-color:var(--site-on-background); background:var(--site-secondary); color:var(--site-on-secondary); }
+.option.selected { background:var(--site-primary); color:var(--site-on-primary); border-color:var(--site-primary); }
+.option .letter { display:block; font-size:10px; letter-spacing:.12em; margin-bottom:13px; opacity:.7; }
+.option .option-copy { font-size:13px; line-height:1.8; }
+.quiz-nav { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:27px; }
+.btn { border:1px solid var(--site-on-background); background:transparent; color:var(--site-on-background); padding:14px 21px; font:inherit; font-size:11px; letter-spacing:.08em; cursor:pointer; }
+.btn.primary { background:var(--site-primary); color:var(--site-on-primary); }
+.btn:disabled { opacity:.3; cursor:not-allowed; }
+.result { margin-top:55px; border-top:1px solid color-mix(in srgb, var(--site-on-background) 30%, transparent); padding-top:38px; }
+.result-kicker { font-size:10px; letter-spacing:.18em; }
+.result-layout { display:grid; grid-template-columns: .8fr 1.2fr; gap:50px; margin-top:26px; }
+.result-symbol { background:var(--site-secondary); color:var(--site-on-secondary); min-height:310px; display:flex; flex-direction:column; justify-content:space-between; padding:24px; }
+.result-symbol .symbol { font-family:var(--site-font-heading); font-size:clamp(65px,10vw,110px); line-height:1; align-self:center; margin:auto 0; }
+.result-symbol .symbol-caption { font-size:10px; letter-spacing:.12em; }
+.result-copy h2 { font-family:var(--site-font-heading); font-size:clamp(30px,4vw,48px); line-height:1.4; font-weight:500; margin:4px 0 12px; }
+.result-subtitle { font-size:12px; letter-spacing:.06em; }
+.result-description { font-family:var(--site-font-heading); font-size:18px; line-height:2; margin:26px 0; }
+.reason-box { border-top:1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); padding-top:20px; margin-top:20px; }
+.reason-box h3 { font-size:10px; letter-spacing:.16em; margin:0 0 12px; }
+.reason-box p,.reason-box li { font-size:13px; line-height:1.95; }
+.reason-box ul { padding-left:18px; }
+.result-tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:20px; }
+.tag { border:1px solid color-mix(in srgb, var(--site-on-background) 35%, transparent); padding:7px 10px; font-size:10px; letter-spacing:.04em; }
+.result-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:30px; }
+.hidden { display:none !important; }
+.method { margin-top:75px; border-top:1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); padding-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+.method h2 { font-family:var(--site-font-heading); font-weight:500; font-size:25px; margin:0 0 14px; }
+.method p { font-size:12px; line-height:2; color:color-mix(in srgb, var(--site-on-background) 75%, transparent); }
+.site-footer { padding:22px 5vw; border-top:1px solid color-mix(in srgb, var(--site-on-background) 25%, transparent); display:flex; justify-content:space-between; gap:20px; font-size:9px; letter-spacing:.12em; }
+@media (max-width:700px) { .hero {grid-template-columns:1fr; gap:25px; padding:50px 0 35px; min-height:unset;} .hero-art {min-height:230px;} .options {grid-template-columns:1fr;} .option {min-height:unset;} .result-layout,.method {grid-template-columns:1fr;gap:25px;} .result-symbol {min-height:220px;} .site-header {padding-left:6vw;padding-right:6vw;} main {padding-left:6vw;padding-right:6vw;} .intro-strip {flex-direction:column;} }
+@media (prefers-color-scheme: dark) { :root { --site-primary:#f0eee8; --site-on-primary:#171717; --site-secondary:#292927; --site-on-secondary:#f0eee8; --site-background:#171717; --site-on-background:#f0eee8; } }
+@media (prefers-reduced-motion: reduce) { * {scroll-behavior:auto!important;transition:none!important;} }
+</style>
+</head>
+<body>
+<div id="app" data-sites-preview-theme="custom">
+  <header class="site-header"><div class="brand">OBJECTIVE</div><div class="header-note">A small archive of perception<br>관찰과 해석에 관한 기록</div></header>
+  <main>
+    <section class="hero" id="top">
+      <div>
+        <div class="eyebrow">Perception type archive · No. 001</div>
+        <h1>당신은 어떤 방식으로<br>세상을 해석하나요?</h1>
+        <p>같은 대상을 보고도 우리는 서로 다른 것을 발견합니다. 사물 앞에 잠시 멈춰, 당신의 시선이 어디에 머무는지 살펴보세요.</p>
+        <div class="hero-meta"><span>7 QUESTIONS</span><span>4 INTERPRETIVE TYPES</span><span>약 3분</span></div>
+      </div>
+      <div class="hero-art" aria-label="관찰의 대상을 상징하는 추상적인 전시 이미지"><div class="art-object">OBJECT / SUBJECT</div><div class="art-index">FIG. 001 — THE ACT OF LOOKING</div><div class="art-index right">OBJECTIVE ARCHIVE</div></div>
+    </section>
+    <div class="intro-strip"><span>OBJECTIVE / OBJECT + OBJECTIVE</span><span>사물을 관찰하고, 의미를 발견하고, 나만의 언어로 해석하기.</span></div>
+    <section id="quiz" aria-live="polite">
+      <div class="section-top"><div><div class="eyebrow">Self-observation questionnaire</div><h2>당신의 시선을 기록합니다</h2></div><div class="progress-text" id="progressText">01 / 07</div></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div id="questionArea">
+        <div class="question-number" id="questionNumber">QUESTION 01</div>
+        <h3 class="question-title" id="questionTitle"></h3>
+        <p class="question-hint" id="questionHint">정답은 없습니다. 가장 자연스럽게 끌리는 답을 골라주세요.</p>
+        <div class="options" id="options"></div>
+        <div class="quiz-nav"><button class="btn" id="prevBtn" type="button">← 이전</button><button class="btn primary" id="nextBtn" type="button" disabled>다음 질문 →</button></div>
+      </div>
+      <section class="result hidden" id="resultArea" aria-live="polite"></section>
+    </section>
+    <section class="method"><div><div class="eyebrow">About this test</div><h2>결과는 당신을 규정하지 않습니다.</h2></div><div><p>OBJECTIVE는 심리 진단이나 과학적으로 검증된 성격 검사가 아니라, 관찰과 해석의 습관을 돌아보는 창작형 테스트입니다. 한 가지 대상에 여러 시선이 공존할 수 있으며, 결과는 지금 선택한 답변의 경향을 바탕으로 제안됩니다.</p><p>이 테스트는 무엇을 보는가뿐 아니라, 어떻게 의미를 만들고 어떤 질문을 이어가는가에 주목합니다.</p></div></section>
+  </main>
+  <footer class="site-footer"><span>OBJECTIVE — AN INTERPRETIVE ARCHIVE</span><span>LOOK CLOSER. THINK DIFFERENTLY.</span></footer>
+</div>
+<script>
+const questions = [
+ {title:"낡은 의자 하나가 전시장 한가운데 놓여 있습니다. 가장 먼저 눈에 들어오는 것은?",hint:"처음 시선이 머무는 곳을 떠올려 보세요.",options:[
+  {text:"나무의 결, 닳은 모서리, 표면에 남은 작은 흔적",type:"S"},
+  {text:"누군가 이 의자에 앉았을 때의 삶과 기억",type:"E"},
+  {text:"의자가 전시장에 놓인 이유와 그 의미",type:"C"},
+  {text:"의자와 주변 공간이 만드는 형태와 균형",type:"F"}]},
+ {title:"작품 설명이 없는 추상화를 마주했습니다. 어떻게 감상하나요?",hint:"작품을 이해하는 당신의 첫 번째 방법은 무엇인가요?",options:[
+  {text:"색과 선, 질감 같은 구체적인 요소를 자세히 본다",type:"S"},
+  {text:"내가 느끼는 감정과 떠오르는 개인적 기억을 따라간다",type:"E"},
+  {text:"작가의 의도나 시대적 배경을 추측하고 찾아본다",type:"C"},
+  {text:"형태 사이의 관계와 화면 전체의 리듬을 살핀다",type:"F"}]},
+ {title:"오래된 물건 하나가 지금까지 보존되어 있다면, 무엇이 가장 궁금한가요?",hint:"궁금증이 향하는 방향을 골라주세요.",options:[
+  {text:"어떤 재료와 기술로 만들어졌을까?",type:"S"},
+  {text:"누가 사용했고 어떤 사연이 있었을까?",type:"E"},
+  {text:"이 물건은 어떤 사회와 시대를 보여줄까?",type:"C"},
+  {text:"지금의 공간에 놓이면 어떤 새로운 모습이 될까?",type:"F"}]},
+ {title:"친구와 같은 영화를 봤는데 감상이 완전히 다릅니다. 당신은?",hint:"서로 다른 해석을 만났을 때의 태도입니다.",options:[
+  {text:"장면과 대사를 다시 떠올리며 근거를 확인한다",type:"S"},
+  {text:"그 장면이 각자에게 다르게 다가온 이유를 듣는다",type:"E"},
+  {text:"작품이 만들어진 맥락과 주제를 함께 이야기한다",type:"C"},
+  {text:"하나의 작품에 여러 해석이 가능한 점이 흥미롭다",type:"F"}]},
+ {title:"익숙한 동네를 새롭게 바라보기로 했습니다. 무엇을 해볼까요?",hint:"평범한 풍경을 낯설게 만드는 방법을 상상해 보세요.",options:[
+  {text:"평소 지나치던 표지판, 재료, 작은 디테일을 기록한다",type:"S"},
+  {text:"그곳에 사는 사람들의 이야기와 기억을 상상한다",type:"E"},
+  {text:"거리의 구조와 변화가 사회에 대해 말하는 것을 살핀다",type:"C"},
+  {text:"다른 시간대와 시점에서 풍경을 사진으로 담는다",type:"F"}]},
+ {title:"전시를 보고 나온 뒤, 가장 하고 싶은 일은 무엇인가요?",hint:"감상이 끝난 다음 이어지는 행동을 선택해 보세요.",options:[
+  {text:"마음에 남은 작품의 특징을 자세히 메모한다",type:"S"},
+  {text:"누군가와 감상을 나누며 마음에 남은 감정을 풀어본다",type:"E"},
+  {text:"작가와 작품의 배경을 더 찾아 읽는다",type:"C"},
+  {text:"전시에서 얻은 인상을 글이나 이미지로 새롭게 표현한다",type:"F"}]},
+ {title:"하나의 사물을 통해 세상을 이해한다면, 무엇을 가장 믿고 싶나요?",hint:"당신의 해석을 지탱하는 중심에 가까운 답입니다.",options:[
+  {text:"눈으로 확인하고 세밀하게 관찰한 사실",type:"S"},
+  {text:"사물에 얽힌 사람들의 경험과 감정",type:"E"},
+  {text:"사물을 둘러싼 맥락과 그 안에 담긴 질문",type:"C"},
+  {text:"관점이 달라질 때 새롭게 드러나는 가능성",type:"F"}]}
+];
+const types = {
+ S:{name:"세밀한 관찰자",en:"THE OBSERVER",symbol:"◌",motto:"작은 차이에서 세계의 단서를 발견하는 사람",description:"당신은 쉽게 지나칠 수 있는 디테일에 오래 머무릅니다. 표면의 질감, 사물의 구조, 빛이 만든 차이를 관찰하며 눈앞의 대상에서 해석의 출발점을 찾습니다. 당신에게 보는 일은 대상을 천천히 읽는 일입니다.",reason:"구체적인 특징과 눈에 보이는 증거를 먼저 살피는 선택이 많이 나타났습니다. 세부를 주의 깊게 관찰한 뒤 의미를 만들어가는 방식이 두드러집니다.",recommend:["작품의 재료와 제작 기법을 중심으로 감상하기","일상의 사물을 스케치하거나 관찰 일지로 기록하기","사진·공예·디자인에서 표면과 디테일 비교하기"],tags:["관찰","물성","디테일"],question:"이 사물의 표면은 어떤 이야기를 감추고 있을까?"},
+ E:{name:"공감하는 서사자",en:"THE STORYTELLER",symbol:"◡",motto:"사물에 깃든 사람과 기억을 상상하는 사람",description:"당신은 사물 자체만큼이나 그것을 둘러싼 사람들의 삶에 관심이 있습니다. 흔적에서 누군가의 시간을 상상하고, 작품과 자신의 경험 사이에서 감정의 연결고리를 발견합니다. 당신에게 해석은 타인의 이야기에 다가가는 일입니다.",reason:"개인의 기억과 감정, 사물에 얽힌 사람들의 이야기를 중요하게 선택했습니다. 대상에 인간적인 맥락을 더해 의미를 발견하는 경향이 보입니다.",recommend:["작품 속 인물과 화자의 관점으로 감상문 쓰기","구술사·에세이·문학에서 개인의 기억 탐색하기","같은 작품을 본 사람들의 서로 다른 감상 모아보기"],tags:["공감","기억","서사"],question:"이 대상과 만난 사람은 무엇을 기억하고 있을까?"},
+ C:{name:"맥락을 읽는 탐구자",en:"THE CONTEXTUALIST",symbol:"⌘",motto:"대상 너머의 시대와 구조를 질문하는 사람",description:"당신은 사물을 고립된 대상으로 보지 않습니다. 누가, 언제, 왜 만들었는지 그리고 어떤 사회적 조건 속에서 의미를 얻었는지 질문합니다. 당신에게 하나의 대상은 더 큰 세계를 읽을 수 있는 입구입니다.",reason:"작품의 배경과 시대, 사회적 의미, 작가의 의도를 탐색하는 답을 자주 골랐습니다. 맥락과 근거를 연결해 해석하려는 경향이 두드러집니다.",recommend:["작품이 만들어진 시대의 역사와 사회를 함께 읽기","철학·미학·문화연구의 질문을 작품에 적용하기","전시의 큐레이터 노트와 작품 설명을 비판적으로 비교하기"],tags:["맥락","비판적 사고","질문"],question:"이 대상이 이 시대와 장소에 놓인 이유는 무엇일까?"},
+ F:{name:"새롭게 보는 상상가",en:"THE REFRAMER",symbol:"◇",motto:"관점을 바꾸어 낯선 가능성을 발견하는 사람",description:"당신은 하나의 정답보다 시선이 바뀌며 생기는 새로운 가능성에 끌립니다. 형태와 관계를 새롭게 배열하고, 익숙한 대상을 낯선 방식으로 바라봅니다. 당신에게 해석은 세계를 다시 구성해 보는 창조적인 실험입니다.",reason:"대상의 배치와 관계, 여러 해석의 가능성, 새로운 표현을 중요하게 선택했습니다. 관점을 전환하며 의미를 확장하는 방식이 강하게 드러납니다.",recommend:["같은 대상을 다른 거리와 각도에서 사진으로 기록하기","초현실주의·개념미술·실험적 디자인 탐색하기","하나의 사물을 세 가지 관점으로 짧게 묘사하기"],tags:["관점 전환","상상력","실험"],question:"이 대상을 전혀 다른 방식으로 본다면 무엇이 달라질까?"}
+};
+let current = 0;
+const answers = Array(questions.length).fill(null);
+const $ = id => document.getElementById(id);
+function renderQuestion(){
+ const q=questions[current];
+ $('questionNumber').textContent=`QUESTION ${String(current+1).padStart(2,'0')}`;
+ $('questionTitle').textContent=q.title;
+ $('questionHint').textContent=q.hint;
+ $('progressText').textContent=`${String(current+1).padStart(2,'0')} / ${String(questions.length).padStart(2,'0')}`;
+ $('progressFill').style.width=`${current/questions.length*100}%`;
+ $('options').innerHTML='';
+ q.options.forEach((o,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.className='option'+(answers[current]===o.type?' selected':'');
+  b.setAttribute('aria-pressed',answers[current]===o.type?'true':'false');
+  b.innerHTML=`<span class="letter">OPTION ${String.fromCharCode(65+i)}</span><span class="option-copy"></span>`;
+  b.querySelector('.option-copy').textContent=o.text;
+  b.addEventListener('click',()=>{answers[current]=o.type;renderQuestion();}); $('options').appendChild(b);
+ });
+ $('prevBtn').disabled=current===0;
+ $('nextBtn').disabled=!answers[current];
+ $('nextBtn').textContent=current===questions.length-1?'해석 결과 보기 ↗':'다음 질문 →';
+ $('questionArea').classList.remove('hidden'); $('resultArea').classList.add('hidden');
+}
+function calculateResult(){
+ const scores={S:0,E:0,C:0,F:0}; answers.forEach(a=>{if(a)scores[a]++;});
+ const max=Math.max(...Object.values(scores));
+ const tied=Object.keys(scores).filter(k=>scores[k]===max);
+ // Tie-breaker: among tied types, prefer the most recent answer that belongs to a tied type.
+ let winner=tied.length===1?tied[0]:[...answers].reverse().find(a=>tied.includes(a));
+ return {winner,scores};
+}
+function showResult(){
+ const {winner,scores}=calculateResult(), t=types[winner];
+ $('progressFill').style.width='100%'; $('progressText').textContent='07 / 07 · COMPLETE';
+ const scoreLine=Object.entries(scores).map(([k,v])=>`${types[k].name} ${v}`).join(' / ');
+ $('resultArea').innerHTML=`<div class="result-kicker">YOUR INTERPRETIVE TYPE / RESULT 00${Object.keys(types).indexOf(winner)+1}</div>
+ <div class="result-layout"><div class="result-symbol"><span class="symbol-caption">OBJECTIVE ARCHIVE / TYPE</span><div class="symbol">${t.symbol}</div><span class="symbol-caption">${t.en}</span></div><div class="result-copy"><div class="eyebrow">당신의 해석 유형</div><h2>${t.name}</h2><div class="result-subtitle">${t.motto}</div><p class="result-description">${t.description}</p><div class="reason-box"><h3>WHY THIS RESULT / 추천 이유</h3><p>${t.reason}</p><p><strong>응답 기록</strong> — ${scoreLine}</p></div><div class="reason-box"><h3>YOUR NEXT EXPLORATION / 추천 탐구</h3><ul>${t.recommend.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="reason-box"><h3>ONE QUESTION TO TAKE WITH YOU</h3><p>${t.question}</p></div><div class="result-tags">${t.tags.map(x=>`<span class="tag"># ${x}</span>`).join('')}</div></div></div>
+ <div class="result-actions"><button type="button" class="btn primary" id="restartBtn">다시 관찰하기 ↻</button><button type="button" class="btn" id="copyBtn">결과 문구 복사하기</button></div>`;
+ $('questionArea').classList.add('hidden'); $('resultArea').classList.remove('hidden');
+ $('restartBtn').addEventListener('click',()=>{current=0;answers.fill(null);renderQuestion();$('quiz').scrollIntoView({behavior:'smooth'});});
+ $('copyBtn').addEventListener('click',async()=>{
+  const text=`OBJECTIVE — ${t.name}\n${t.motto}\n\n${t.description}\n\n추천 탐구\n${t.recommend.map(x=>'• '+x).join('\n')}\n\n질문: ${t.question}`;
+  try { await navigator.clipboard.writeText(text); $('copyBtn').textContent='복사 완료 ✓'; }
+  catch(e) { const area=document.createElement('textarea'); area.value=text; document.body.appendChild(area); area.select(); try {document.execCommand('copy');$('copyBtn').textContent='복사 완료 ✓';} catch(_) {$('copyBtn').textContent='복사할 수 없음';} area.remove(); }
+ });
+}
+$('prevBtn').addEventListener('click',()=>{if(current>0){current--;renderQuestion();}});
+$('nextBtn').addEventListener('click',()=>{if(!answers[current])return;if(current<questions.length-1){current++;renderQuestion();}else{showResult();}});
+renderQuestion();
+</script>
+</body>
+</html>
